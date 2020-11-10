@@ -1,0 +1,6 @@
+pydub
+fleep
+google-cloud-speech
+google-cloud-storage
+rootpath
+python-dotenv
