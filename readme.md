@@ -17,6 +17,7 @@ pipwin install PyAudio
 ```
 **NOTE:** as a prerequisite you must have `gcloud` account. Follow the [steps](https://cloud.google.com/speech-to-text/docs/quickstart-client-libraries) required for initial setup of the project.
 Do not forget to set the environment variable GOOGLE_APPLICATION_CREDENTIALS to the path of the JSON file that contains your service account key.
+Also, the GC storage bucket is required. Please, fill the name of it in .env file. 
 I.e on Linux :
 ```shell script
 export GOOGLE_APPLICATION_CREDENTIALS="[PATH]"
@@ -34,5 +35,5 @@ python main.py
 ***Speech-recognition*** is a simple python cli application that conducts speech-to-text transcription for Slovene language.
 The app flow consists of three main parts:
 - ****Speech recorder**** - Input microphone audio is recorded while `ctrl` button is pressed. The wav file is saved into `{root}/output/audio/audio_file*.wav` 
-- ****Speech transcription**** - Input speech file is transcribed into textual file via Google Cloud speech api. The transcription is saved into  `{root}/output/audio/audio_file*.txt`
+- ****Speech transcription**** - Input speech file is transcribed into textual file via Google Cloud speech api. The transcription is saved into  `{root}/output/transcriptions/audio_file*.txt`
 - ****Transcription mailer**** - Mails the transcribed speech file to the mailer list.

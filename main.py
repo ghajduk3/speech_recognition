@@ -10,6 +10,7 @@ from transcription import Transcription
 from dotenv import load_dotenv
 from emails.mail_server import MailServer
 from datetime import date
+from postprocess.postprocess import Postprocess
 logger = logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',level=logging.DEBUG)
 load_dotenv()
@@ -17,9 +18,6 @@ load_dotenv()
 
 def processArgs():
     parser = argparse.ArgumentParser(description='Speech to text Google Speech Api interface for Slovenian language. Documentation can be found on  <github documentation link>')
-    parser.add_argument('-i', '--input', required=True, default='empty',
-                        help='[required] Input audio file path.', metavar="FILE",
-                        type=lambda x: is_valid_file(parser, x))
     parser.add_argument('-s', '--storage', required=True, default='server', type=str,
                         help='[required] Which storage type to use for saving audio file. Available options (server|gcs) ,default is local.')
     parser.add_argument('-b', '--bucket', required=False, default='a1audio', type=str,
@@ -29,7 +27,7 @@ def processArgs():
 
 if __name__ == '__main__':
     # args = processArgs()
-
+    print("Press and hold ctrl button in order to record. Release the button in order to stop recording.")
     r = Recorder()
     p = Player()
     l = Listener(r, p)
@@ -40,8 +38,8 @@ if __name__ == '__main__':
     audio_file_name = l.audio_path
     folder_name = os.path.join(rootpath.detect(),'output','audio')
     audio_object, (audio_channels, audio_frame_rate) = Preprocess.preprocessAudio(os.path.join(folder_name,audio_file_name))
-    bucket_name = 'a1audio'
-    trans = Transcription(folder_name, audio_file_name, bucket_name, audio_channels, audio_frame_rate)
+
+    trans = Transcription(folder_name, audio_file_name, os.getenv("sender_password"), audio_channels, audio_frame_rate)
     write_to_file(trans.transcribe_from_file(audio_object), audio_file_name)
 
     subject = "Meeting transcription, {}".format(date.today().strftime("%Y-%m-%d"))
