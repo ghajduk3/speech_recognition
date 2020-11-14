@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-!output/
+
 
 __pycache__/
 *.py[cod]
@@ -7,8 +7,7 @@ __pycache__/
 
 
 # Data
-output/audio/*
-output/transcriptions/*
+
 
 # C extensions
 *.so
