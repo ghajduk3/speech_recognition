@@ -6,4 +6,4 @@ rootpath
 python-dotenv
 pynput
 pyaudio
-
+sphinx

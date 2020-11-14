@@ -1,4 +1,4 @@
-import smtplib, ssl, getpass # getpass should be added as a import value
+import smtplib, ssl
 from smtplib import SMTPException, SMTPAuthenticationError
 from email import encoders
 from email.mime.base import MIMEBase
@@ -9,9 +9,21 @@ import os
 import logging
 logger = logging.getLogger(__name__)
 class MailServer(metaclass=SingletonMeta):
+    """
+    A singleton patterned class to represent connection and sending an email.
 
+    ...
+
+    Methods
+    -------
+    send_mail(subject,body,attachment,receiver_email):
+        Sends an email with attachment to desired receivers.
+    """
     def __init__(self):
+        """
+        Constructs all the necessary attributes for the mail server object.
 
+        """
         self.port = os.getenv("smtp_port")
         self.sender_email = os.getenv("sender_email")
         self.smtp_server = os.getenv("smtp_server")
@@ -27,6 +39,16 @@ class MailServer(metaclass=SingletonMeta):
 
 
     def send_mail(self,subject,body,attachment,receiver_email):
+        '''
+        Sends an email with attachment to desired receivers.
+
+                Parameters:
+                        subject (str) : Subject of email.
+                        body (str) : Body content of email.
+                        attachment (str) : Absolute or relative path of the attachment to be sent.
+                        receiver_email (list) : List of receiver mail addresses.
+
+        '''
         logger.info("Preparing to send an email with transcription from {} as attachment".format(attachment))
         message = MIMEMultipart()
         message["From"] = self.sender_email
@@ -47,7 +69,7 @@ class MailServer(metaclass=SingletonMeta):
             logger.exception("Unexpected error")
 
         encoders.encode_base64(part)
-        part.add_header( "Content-Disposition",f"attachment; filename= {attachment}",)
+        part.add_header( "Content-Disposition",f"attachment; filename= meeting_transcription.txt",)
         message.attach(part)
         for receiver in receiver_email:
             try:

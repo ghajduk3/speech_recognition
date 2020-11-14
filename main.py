@@ -1,20 +1,18 @@
 from audio_recorder.listener import Listener
-from audio_recorder.player import Player
 from audio_recorder.recorder import Recorder
 from preprocess.preprocess import Preprocess
 import argparse,rootpath,os
 from cloud.Google_cloud import GoogleCloud
 import logging
-from utils import is_valid_file,split_input_path,write_to_file
-from transcription import Transcription
+from utils import split_input_path,write_to_file
+from transcription.transcription import Transcription
 from dotenv import load_dotenv
 from emails.mail_server import MailServer
 from datetime import date
-from postprocess.postprocess import Postprocess
+
 logger = logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',level=logging.DEBUG)
 load_dotenv()
-
 
 def processArgs():
     parser = argparse.ArgumentParser(description='Speech to text Google Speech Api interface for Slovenian language. Documentation can be found on  <github documentation link>')
@@ -29,17 +27,15 @@ if __name__ == '__main__':
     # args = processArgs()
     print("Press and hold ctrl button in order to record. Release the button in order to stop recording.")
     r = Recorder()
-    p = Player()
-    l = Listener(r, p)
-    l.start() #keyboard listener is a thread so we start it here
-    l.join() #wait for the tread to terminate so the program doesn't instantly close
-
+    l = Listener(r)
+    l.start()
+    l.join()
 
     audio_file_name = l.audio_path
     folder_name = os.path.join(rootpath.detect(),'output','audio')
     audio_object, (audio_channels, audio_frame_rate) = Preprocess.preprocessAudio(os.path.join(folder_name,audio_file_name))
 
-    trans = Transcription(folder_name, audio_file_name, os.getenv("sender_password"), audio_channels, audio_frame_rate)
+    trans = Transcription(folder_name, audio_file_name, os.getenv("bucket_name"), audio_channels, audio_frame_rate)
     write_to_file(trans.transcribe_from_file(audio_object), audio_file_name)
 
     subject = "Meeting transcription, {}".format(date.today().strftime("%Y-%m-%d"))

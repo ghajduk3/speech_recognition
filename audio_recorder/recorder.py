@@ -6,12 +6,50 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Recorder:
+    """
+    A class to represent an input voice recorder.
+
+    ...
+
+    Attributes
+    ----------
+    chunksize : int
+        chunk data size
+    dataformat : int
+        sampling size and format
+    channels : int
+        number of channels
+    rate : int
+        sampling rate
+
+    Methods
+    -------
+    start():
+        Starts the recording stream. Writes the stream data frames to {root folder}/output/audio/file.wav
+    stop():
+        Stops the recording stream. Returns the path to stored audio file.
+    """
+
     data = []
     def __init__(self,
                  chunksize=1024,
                  dataformat=pyaudio.paInt16,
                  channels=2,
                  rate=44100):
+        """
+        Constructs all the necessary attributes for the record object.
+
+        Parameters
+        ----------
+            chunksize : int
+                chunk data size
+            dataformat : int
+                sampling size and format
+            channels : int
+                number of channels
+            rate : int
+                sampling rate
+        """
         self.filename = None
         self.chunksize = chunksize
         self.dataformat = dataformat
@@ -22,6 +60,9 @@ class Recorder:
         self.wf = None
 
     def start(self):
+        '''
+        Starts the recording stream. Writes the stream data frames to {root folder}/output/audio/file.wav
+        '''
         if not self.recording:
             self.filename = 'audio_file' + str(random.randint(0, 10000)) + '.wav'
             try:
@@ -50,7 +91,12 @@ class Recorder:
             self.recording = True
             logger.info("Recording started")
 
-    def stop(self):
+    def stop(self)->str:
+        '''
+        Stops the recording stream. Returns the path to stored audio file.
+                Returns:
+                        self.filename (str): Path to stored audio file
+        '''
         if self.recording:
             self.stream.stop_stream()
             self.stream.close()

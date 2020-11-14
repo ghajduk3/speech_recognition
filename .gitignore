@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+
+# Data
+output/audio/*
+output/transcriptions/*
+
 # C extensions
 *.so
 
